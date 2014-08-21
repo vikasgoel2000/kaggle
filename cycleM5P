@@ -1,0 +1,32 @@
+setwd("C:/Users/Vikas/Downloads")
+
+datamain<-read.csv("train1.csv",header=T,stringsAsFactors=F)
+datamain$season<-as.factor(datamain$season)
+datamain$holiday<-as.factor(datamain$holiday)
+datamain$weather<-as.factor(datamain$weather)
+datamain$time<-substr(datamain$datetime,11,19)
+datamain$time<-as.factor(datamain$time)
+datamain$date<-strtrim(datamain$datetime,10)
+datamain$date<-as.factor(datamain$date)
+
+
+test<-read.csv("testab.csv",header=T,stringsAsFactors=F)
+test$season<-as.factor(test$season)
+test$holiday<-as.factor(test$holiday)
+test$weather<-as.factor(test$weather)
+test$time<-substr(test$datetime,11,19)
+test$time<-as.factor(test$time)
+test$date<-strtrim(test$datetime,10)
+test$date<-as.factor(test$date)
+
+library(RWeka)
+
+m<-M5P(count~season+holiday+workingday+windspeed+weather+atemp+humidity+time,data=datamain)
+predict<-predict(m,test)
+submission = data.frame(datetime = test$datetime, count = predict)
+submission$count <- ifelse(submission$count<0,0,submission$count)
+write.csv(submission, "submission.csv", row.names=FALSE)
+
+
+it resulted in best submission yet ... rank 274...
+
